@@ -10,12 +10,21 @@ import { handleChatRequest } from './controllers/chatController.js';
 
 const app = express();
 
-// Configurar CORS para permitir solicitudes desde el frontend
+// Configurar CORS para permitir solicitudes desde múltiples orígenes
+const allowedOrigins = ['http://localhost:5173', 'https://frontend-ana.vercel.app'];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
+
 
 // Middleware para procesar JSON
 app.use(express.json());
